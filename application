@@ -2,32 +2,113 @@
 import sqlite3
 
 # constants and variables
-DATABASE = placeholder
+DATABASE = 'countries.db'
 
 # functions
 
-def print_country_info:
-# connect to the database, execute the SQL code, and print the results.
+def print_country_info():
+# prints everything about every country
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT * FROM country"
+    sql = "SELECT * FROM country_list"
     cursor.execute(sql)
     results = cursor.fetchall()
     print(results)
     db.close()
 
-def print_capital_info:
-# connect to the database, execute the SQL code, and print the results.
+def print_capital_info():
+# prints everything about every capital
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT * FROM capital"
+    sql = "SELECT * FROM capital_list"
     cursor.execute(sql)
     results = cursor.fetchall()
     print(results)
     db.close()
 
+def print_country_size():
+# prints the area of each country
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT country, size FROM country_list"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    for row in results:
+        print(f"{row[0]}: {row[1] * 2.58999} km²") # converts square miles to square kilometers
+    db.close()
+
+def print_country_population():
+# connect to the database, execute the SQL code, and print the results.
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT country, population FROM country_list"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    print(results)
+    db.close()
+
+def print_capitals_age():
+# connect to the database, execute the SQL code, and print the results.
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT name, date_establishedFROM capital_list"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    print(results)
+    db.close()
+
+def print_country_gdp_per_capita():
+# connect to the database, execute the SQL code, and print the results.
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT country, gdp_per_capita FROM country_list"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    print(results)
+    db.close()
+
+def print_capitals_alphabetically():
+# connect to the database, execute the SQL code, and print the results.
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT * FROM capital_list ORDER BY name"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    print(results)
+    db.close()
+
+def print_country_gdp_per_capita():
+# connect to the database, execute the SQL code, and print the results.
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT country, gdp_per_capita FROM country_list"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    print(results)
+    db.close()
+
+def print_specific_country(country_name):
+# connect to the database, execute the SQL code, and print the results.
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = ("SELECT * FROM country_list WHERE country =?", (country_name,))
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    print(results)
+    db.close()
 # main code
 
+def print_specific_capital(capital_name):
+# connect to the database, execute the SQL code, and print the results.
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = ("SELECT * FROM capital_list WHERE name =?", (capital_name,))
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    print(results)
+    db.close()
 
+country_name = input("Enter the name of the country you want to search for: ")
+capital_name = input("Enter the name of the capital you want to search for: ")
 
-
+print_specific_country()
