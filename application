@@ -30,7 +30,7 @@ def print_country_size():
 # prints the area of each country
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT country, size FROM country_list"
+    sql = "SELECT country, area FROM country_list"
     cursor.execute(sql)
     results = cursor.fetchall()
     for row in results:
@@ -38,7 +38,7 @@ def print_country_size():
     db.close()
 
 def print_country_population():
-# connect to the database, execute the SQL code, and print the results.
+# prints the population of every country
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT country, population FROM country_list"
@@ -48,17 +48,17 @@ def print_country_population():
     db.close()
 
 def print_capitals_age():
-# connect to the database, execute the SQL code, and print the results.
+# print when each capital was established
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT name, date_establishedFROM capital_list"
+    sql = "SELECT name, date_established FROM capital_list"
     cursor.execute(sql)
     results = cursor.fetchall()
     print(results)
     db.close()
 
 def print_country_gdp_per_capita():
-# connect to the database, execute the SQL code, and print the results.
+# print gdp per capita of a country in USD
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT country, gdp_per_capita FROM country_list"
@@ -68,7 +68,7 @@ def print_country_gdp_per_capita():
     db.close()
 
 def print_capitals_alphabetically():
-# connect to the database, execute the SQL code, and print the results.
+# print everything about capitals, but in alphabetical order
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT * FROM capital_list ORDER BY name"
@@ -77,38 +77,70 @@ def print_capitals_alphabetically():
     print(results)
     db.close()
 
-def print_country_gdp_per_capita():
-# connect to the database, execute the SQL code, and print the results.
+def print_specific_country(formatted_country_name):
+# takes the users desired country and outputs information about it
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT country, gdp_per_capita FROM country_list"
-    cursor.execute(sql)
+    sql = "SELECT * FROM country_list WHERE country =?"
+    params = (formatted_country_name,)
+    # connect the python code to the SQL query
+    cursor.execute(sql, params)
     results = cursor.fetchall()
     print(results)
     db.close()
 
-def print_specific_country(country_name):
+def print_specific_capital(formatted_capital_name):
 # connect to the database, execute the SQL code, and print the results.
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = ("SELECT * FROM country_list WHERE country =?", (country_name,))
-    cursor.execute(sql)
-    results = cursor.fetchall()
-    print(results)
-    db.close()
-# main code
-
-def print_specific_capital(capital_name):
-# connect to the database, execute the SQL code, and print the results.
-    db = sqlite3.connect(DATABASE)
-    cursor = db.cursor()
-    sql = ("SELECT * FROM capital_list WHERE name =?", (capital_name,))
-    cursor.execute(sql)
+    sql = "SELECT * FROM capital_list WHERE name =?"
+    params = (formatted_capital_name,)
+    # connect the python code to the SQL query
+    cursor.execute(sql, params)
     results = cursor.fetchall()
     print(results)
     db.close()
 
-country_name = input("Enter the name of the country you want to search for: ")
-capital_name = input("Enter the name of the capital you want to search for: ")
+while True:
+    print("Welcome to the country database! Please select an option:")
+    print("1. Print all country information")
+    print("2. Print all capital information")
+    print("3. Print the area of each country in square kilometers")
+    print("4. Print the population of each country")
+    print("5. Print the date established of each capital")
+    print("6. Print the GDP per capita of each country")
+    print("7. Print the capitals in alphabetical order")
+    print("8. Search for a specific country")
+    print("9. Search for a specific capital")
+    print("10. Exit")
+    choice = int(input("Choice: "))
+    if choice == 1:
+        print_country_info()
+    elif choice == 2:
+        print_capital_info()
+    elif choice == 3:
+        print_country_size()
+    elif choice == 4:
+        print_country_population()
+    elif choice == 5:
+        print_capitals_age()
+    elif choice == 6:
+        print_country_gdp_per_capita()
+    elif choice == 7:
+        print_capitals_alphabetically()
+    elif choice == 8:
+        country_name = input("Enter the name of the country you want to search for: ") 
+        formatted_country_name = country_name.title() + " "
+        print_specific_country(formatted_country_name)
+    elif choice == 9:
+        capital_name = input("Enter the name of the capital you want to search for: ")
+        formatted_capital_name = capital_name.title() + " "
+        print_specific_capital(formatted_capital_name)
+    elif choice == 10:
+        break
+    else:
+        print('Invalid input.')
+print("Thanks for using!")
+        
 
-print_specific_country()
+
