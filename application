@@ -13,6 +13,8 @@ def print_country_info():
     sql = "SELECT * FROM country_list"
     cursor.execute(sql)
     results = cursor.fetchall()
+    for country in results:
+        print
     print(results)
     db.close()
 
@@ -90,7 +92,7 @@ def print_specific_country(formatted_country_name):
     db.close()
 
 def print_specific_capital(formatted_capital_name):
-# connect to the database, execute the SQL code, and print the results.
+    # connect to the database, execute the SQL code, and print the results.
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT * FROM capital_list WHERE name =?"
@@ -102,6 +104,7 @@ def print_specific_capital(formatted_capital_name):
     db.close()
 
 while True:
+    # Print out a menu for users to select what action they want to do.
     print("Welcome to the country database! Please select an option:")
     print("1. Print all country information")
     print("2. Print all capital information")
@@ -113,7 +116,9 @@ while True:
     print("8. Search for a specific country")
     print("9. Search for a specific capital")
     print("10. Exit")
+    
     choice = int(input("Choice: "))
+    # runs the functions recquired for each input
     if choice == 1:
         print_country_info()
     elif choice == 2:
@@ -129,15 +134,21 @@ while True:
     elif choice == 7:
         print_capitals_alphabetically()
     elif choice == 8:
+        print_specific_country
         country_name = input("Enter the name of the country you want to search for: ") 
+        # gets the name of a specific country
         formatted_country_name = country_name.title() + " "
+        # formats the input to match the database
         print_specific_country(formatted_country_name)
     elif choice == 9:
         capital_name = input("Enter the name of the capital you want to search for: ")
+        # gets the name of a specific capital
         formatted_capital_name = capital_name.title() + " "
+        # formats the input to match the database
         print_specific_capital(formatted_capital_name)
     elif choice == 10:
         break
+        # exit the code
     else:
         print('Invalid input.')
 print("Thanks for using!")
