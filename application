@@ -3,6 +3,8 @@ import sqlite3
 
 # constants and variables
 DATABASE = 'countries.db'
+times_used = 0
+
 
 # functions
 
@@ -13,9 +15,9 @@ def print_country_info():
     sql = "SELECT * FROM country_list"
     cursor.execute(sql)
     results = cursor.fetchall()
-    for country in results:
-        print
-    print(results)
+    print("Name:             Population:    Area (sq mi):  GDP per capita:")
+    for row in results:
+        print(f"{row[0]:<40}{row[1]:<12}{row[2]:<12}{row[3]:<8}{row[4]:<8}")
     db.close()
 
 def print_capital_info():
@@ -25,7 +27,8 @@ def print_capital_info():
     sql = "SELECT * FROM capital_list"
     cursor.execute(sql)
     results = cursor.fetchall()
-    print(results)
+    for row in results:
+        print(f"{row[0]:<40}{row[1]:<12}{row[2]:<12}{row[3]:<8}{row[4]:<8}")
     db.close()
 
 def print_country_size():
@@ -46,7 +49,8 @@ def print_country_population():
     sql = "SELECT country, population FROM country_list"
     cursor.execute(sql)
     results = cursor.fetchall()
-    print(results)
+    for row in results:
+        print(f"{row[0]:<40}{row[1]:<12}")
     db.close()
 
 def print_capitals_age():
@@ -88,11 +92,14 @@ def print_specific_country(formatted_country_name):
     # connect the python code to the SQL query
     cursor.execute(sql, params)
     results = cursor.fetchall()
-    print(results)
+    if results == []:
+        print("Country not found.")
+    else:
+        print(results)
     db.close()
 
 def print_specific_capital(formatted_capital_name):
-    # connect to the database, execute the SQL code, and print the results.
+    # takes the users desired capital and outputs information about it
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT * FROM capital_list WHERE name =?"
@@ -100,57 +107,81 @@ def print_specific_capital(formatted_capital_name):
     # connect the python code to the SQL query
     cursor.execute(sql, params)
     results = cursor.fetchall()
-    print(results)
+    if results == []:
+        print("Capital not found.")
+    else:
+        print(results)
     db.close()
 
+
+
+
 while True:
+    try:
     # Print out a menu for users to select what action they want to do.
-    print("Welcome to the country database! Please select an option:")
-    print("1. Print all country information")
-    print("2. Print all capital information")
-    print("3. Print the area of each country in square kilometers")
-    print("4. Print the population of each country")
-    print("5. Print the date established of each capital")
-    print("6. Print the GDP per capita of each country")
-    print("7. Print the capitals in alphabetical order")
-    print("8. Search for a specific country")
-    print("9. Search for a specific capital")
-    print("10. Exit")
-    
-    choice = int(input("Choice: "))
-    # runs the functions recquired for each input
-    if choice == 1:
-        print_country_info()
-    elif choice == 2:
-        print_capital_info()
-    elif choice == 3:
-        print_country_size()
-    elif choice == 4:
-        print_country_population()
-    elif choice == 5:
-        print_capitals_age()
-    elif choice == 6:
-        print_country_gdp_per_capita()
-    elif choice == 7:
-        print_capitals_alphabetically()
-    elif choice == 8:
-        print_specific_country
-        country_name = input("Enter the name of the country you want to search for: ") 
-        # gets the name of a specific country
-        formatted_country_name = country_name.title() + " "
-        # formats the input to match the database
-        print_specific_country(formatted_country_name)
-    elif choice == 9:
-        capital_name = input("Enter the name of the capital you want to search for: ")
-        # gets the name of a specific capital
-        formatted_capital_name = capital_name.title() + " "
-        # formats the input to match the database
-        print_specific_capital(formatted_capital_name)
-    elif choice == 10:
-        break
-        # exit the code
-    else:
-        print('Invalid input.')
+        # if the user has already used the database, don't display the 'Welcome' message.
+        if times_used == 0:
+            print("Welcome to the country database! Please select an option:")
+        times_used += 1
+        print("Country commands:")
+        # show all the options relating to countries
+        print("1. Print all country information")
+        print("2. Print the population of each country")
+        print("3. Print the area of each country in square kilometers")
+        print("4. Print the GDP per capita of each country")
+        print("5. Search for a specific country")
+        print("Capital commands:")
+        # show all the options relating to capitals
+        print("6. Print all capital information")
+        print("7. Print the population of each capital")
+        print("8. Print the date established of each capital")
+        print("9. Print the capitals in alphabetical order")
+        print("10. Search for a specific capital")
+        print("11. Exit")
+        
+        choice = int(input("Choice: "))
+        # runs the functions recquired for each input
+        if choice == 1:
+            print_country_info()
+        elif choice == 2:
+            print_country_population()
+        elif choice == 3:
+            print_country_size()
+        elif choice == 4:
+            print_country_gdp_per_capita()
+        elif choice == 5:
+            country_name = input("Enter the name of the country you want to search for: ") 
+            # gets the name of a specific country
+            remove_spaces = country_name.strip()
+            # removes spaces from the input
+            formatted_country_name = remove_spaces.title()
+            # formats the input to match the database
+            print_specific_country(formatted_country_name)
+        elif choice == 6:
+            print_capital_info()
+        elif choice == 7:
+            print_capitals_population()
+        elif choice == 8:
+            print_capitals_age()
+        elif choice == 9:
+                print_capitals_alphabetically()
+        elif choice == 10:
+            capital_name = input("Enter the name of the capital you want to search for: ")
+            # gets the name of a specific capital
+            remove_spaces = capital_name.strip()
+            # removes spaces from the input
+            formatted_capital_name = remove_spaces.title()
+            # formats the input to match the database
+            print_specific_capital(formatted_capital_name)
+        elif choice == 11:
+            break
+            # exit the code
+        else:
+            print('Invalid input.')
+    except ValueError:
+        # check if the input is invalid, and if it is, print an error message
+        print("Invalid input. Please enter a number from 1 to 10.")
+
 print("Thanks for using!")
         
 
