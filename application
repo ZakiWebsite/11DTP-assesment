@@ -16,11 +16,12 @@ def print_country_info():
     cursor.execute(sql)
     results = cursor.fetchall()
     # print a header for the information
-    print("Name:                                   Population: Area (sq mi):      GDP per capita (USD):")
+    print("Name:                                   Population:         Area (sq mi):       GDP per capita (USD):")
     # print the information neatly
     for row in results:
         print(f"{row[0]:<40}{row[1]:<20}{row[2]:<20}{row[3]:<20}")
     db.close()
+
 
 def print_capital_info():
 # prints everything about every capital
@@ -30,11 +31,12 @@ def print_capital_info():
     cursor.execute(sql)
     results = cursor.fetchall()
     # print a header for the information
-    print("Name:                                   Population: Date Established:")
+    print("Name:                                   Population:         Date Established:")
     # print the information neatly
     for row in results:
         print(f"{row[0]:<40}{row[1]:<20}{row[2]:<20}")
     db.close()
+
 
 def print_country_size():
 # prints the area of each country
@@ -50,6 +52,7 @@ def print_country_size():
         print(f"{row[0]:<40}{row[1]:<20}")
     db.close()
 
+
 def print_country_population():
 # prints the population of every country
     db = sqlite3.connect(DATABASE)
@@ -64,7 +67,8 @@ def print_country_population():
         print(f"{row[0]:<40}{row[1]:<20}")
     db.close()
 
-def print_capitals_age():
+
+def print_capital_age():
 # print when each capital was established
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
@@ -75,8 +79,9 @@ def print_capitals_age():
     print("Name:                                   Date Established:")
     # print the information neatly
     for row in results:
-        print(f"{row[0]:<40}{row[1]:<20}{row[2]:<20}{row[3]:<20}")
+        print(f"{row[0]:<40}{row[1]:<20}")
     db.close()
+
 
 def print_country_gdp_per_capita():
 # print gdp per capita of a country in USD
@@ -92,7 +97,23 @@ def print_country_gdp_per_capita():
         print(f"{row[0]:<40}{row[1]:<20}")
     db.close()
 
-def print_capitals_alphabetically():
+
+def print_capital_population():
+# print the population of each capital
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT name, population FROM capital_list"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    # print a header for the information
+    print("Name:                                   Population:")
+    # print the information neatly
+    for row in results:
+        print(f"{row[0]:<40}{row[1]:<20}")
+    db.close()
+
+
+def print_capital_alphabetically():
 # print everything about capitals, but in alphabetical order
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
@@ -106,24 +127,27 @@ def print_capitals_alphabetically():
         print(f"{row[0]:<40}{row[1]:<20}{row[2]:<20}")
     db.close()
 
+
 def print_specific_country(formatted_country_name):
-# takes the users desired country and outputs information about it
+    # takes the users desired capital and outputs information about it
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT * FROM country_list WHERE country =?"
     params = (formatted_country_name,)
     # connect the python code to the SQL query
     cursor.execute(sql, params)
-    results = cursor.fetchall()
-    # check if the country exists and if it doesn't print an error message.
-    if results == [] or ValueError:
+    results = cursor.fetchone()
+    # check if the capital exists and if it doesn't print an error message.
+    if results is None:
         print("Country not found.")
     else:
     # print a header for the information
-    print("Name:                                   Population: Area (sq mi):      GDP per capita:")
+        print("Name:                                   Population:         Area (sq mi):       GDP per capita (USD):")
     # print the information neatly
+        row = results
         print(f"{row[0]:<40}{row[1]:<20}{row[2]:<20}{row[3]:<20}")
     db.close()
+
 
 def print_specific_capital(formatted_capital_name):
     # takes the users desired capital and outputs information about it
@@ -133,18 +157,17 @@ def print_specific_capital(formatted_capital_name):
     params = (formatted_capital_name,)
     # connect the python code to the SQL query
     cursor.execute(sql, params)
-    results = cursor.fetchall()
+    results = cursor.fetchone()
     # check if the capital exists and if it doesn't print an error message.
-    if results == [] or ValueError:
+    if results is None:
         print("Capital not found.")
     else:
     # print a header for the information
-    print("Name:                                   Population:       Date Established:")
+        print("Name:                                   Population:       Date Established:")
     # print the information neatly
-
-        print(f"{row[0]:<40}{row[1]:<20}{row[2]:<20}{")
+        row = results
+        print(f"{row[1]:<40}{row[2]:<20}{row[3]:<20}")
     db.close()
-
 
 
 
@@ -159,7 +182,7 @@ while True:
         # show all the options relating to countries
         print("1. Print all country information")
         print("2. Print the population of each country")
-        print("3. Print the area of each country in square kilometers")
+        print("3. Print the area of each country in square miles")
         print("4. Print the GDP per capita of each country")
         print("5. Search for a specific country")
         print("Capital commands:")
@@ -182,28 +205,31 @@ while True:
         elif choice == 4:
             print_country_gdp_per_capita()
         elif choice == 5:
-            country_name = input("Enter the name of the country you want to search for: ") 
             # gets the name of a specific country
-            remove_spaces = country_name.strip()
+            country_name = input("Enter the name of the country you want to search for: ")
             # removes spaces from the input
-            formatted_country_name = remove_spaces.title()
+            country_name = country_name.strip()
             # formats the input to match the database
+            country_name = country_name.title()
+            formatted_country_name = country_name + " "
+            # runs the command
             print_specific_country(formatted_country_name)
         elif choice == 6:
             print_capital_info()
         elif choice == 7:
-            print_capitals_population()
+            print_capital_population()
         elif choice == 8:
-            print_capitals_age()
+            print_capital_age()
         elif choice == 9:
-                print_capitals_alphabetically()
+            print_capital_alphabetically()
         elif choice == 10:
-            capital_name = input("Enter the name of the capital you want to search for: ")
             # gets the name of a specific capital
-            remove_spaces = capital_name.strip()
+            capital_name = input("Enter the name of the capital you want to search for: ")
             # removes spaces from the input
-            formatted_capital_name = remove_spaces.title()
+            remove_spaces = capital_name.strip()
             # formats the input to match the database
+            formatted_capital_name = remove_spaces.title()
+            # runs the command
             print_specific_capital(formatted_capital_name)
         elif choice == 11:
             break
