@@ -1,4 +1,4 @@
-# docstring Zakaria B. country database
+''' docstring Zakaria B. country database '''
 import sqlite3
 
 # constants and variables
@@ -9,7 +9,7 @@ times_used = 0
 # functions
 
 def print_country_info():
-# prints everything about every country
+    # prints everything about every country
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT country, population, area, gdp_per_capita FROM country_list"
@@ -24,7 +24,7 @@ def print_country_info():
 
 
 def print_capital_info():
-# prints everything about every capital
+    # prints everything about every capital
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT name, population, date_established FROM capital_list"
@@ -39,7 +39,7 @@ def print_capital_info():
 
 
 def print_country_size():
-# prints the area of each country
+    # prints the area of each country
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT country, area FROM country_list"
@@ -54,7 +54,7 @@ def print_country_size():
 
 
 def print_country_population():
-# prints the population of every country
+    # prints the population of every country
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT country, population FROM country_list"
@@ -69,7 +69,7 @@ def print_country_population():
 
 
 def print_capital_age():
-# print when each capital was established
+    # print when each capital was established
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT name, date_established FROM capital_list"
@@ -84,7 +84,7 @@ def print_capital_age():
 
 
 def print_country_gdp_per_capita():
-# print gdp per capita of a country in USD
+    # print gdp per capita of a country in USD
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT country, gdp_per_capita FROM country_list"
@@ -99,7 +99,7 @@ def print_country_gdp_per_capita():
 
 
 def print_capital_population():
-# print the population of each capital
+    # print the population of each capital
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT name, population FROM capital_list"
@@ -114,7 +114,7 @@ def print_capital_population():
 
 
 def print_capital_alphabetically():
-# print everything about capitals, but in alphabetical order
+    # print everything about capitals, but in alphabetical order
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     sql = "SELECT name, population, date_established FROM capital_list ORDER BY name"
@@ -132,7 +132,7 @@ def print_specific_country(formatted_country_name):
     # takes the users desired capital and outputs information about it
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT * FROM country_list WHERE country =?"
+    sql = "SELECT * FROM country_list WHERE country = ?"
     params = (formatted_country_name,)
     # connect the python code to the SQL query
     cursor.execute(sql, params)
@@ -141,9 +141,9 @@ def print_specific_country(formatted_country_name):
     if results is None:
         print("Country not found.")
     else:
-    # print a header for the information
+        # print a header for the information
         print("Name:                                   Population:         Area (sq mi):       GDP per capita (USD):")
-    # print the information neatly
+        # print the information neatly
         row = results
         print(f"{row[0]:<40}{row[1]:<20}{row[2]:<20}{row[3]:<20}")
     db.close()
@@ -153,7 +153,7 @@ def print_specific_capital(formatted_capital_name):
     # takes the users desired capital and outputs information about it
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT * FROM capital_list WHERE name =?"
+    sql = "SELECT * FROM capital_list WHERE name = ?"
     params = (formatted_capital_name,)
     # connect the python code to the SQL query
     cursor.execute(sql, params)
@@ -162,18 +162,17 @@ def print_specific_capital(formatted_capital_name):
     if results is None:
         print("Capital not found.")
     else:
-    # print a header for the information
+        # print a header for the information
         print("Name:                                   Population:       Date Established:")
-    # print the information neatly
+        # print the information neatly
         row = results
         print(f"{row[1]:<40}{row[2]:<20}{row[3]:<20}")
     db.close()
 
 
-
 while True:
     try:
-    # Print out a menu for users to select what action they want to do.
+        # Print out a menu for users to select what action they want to do.
         # if the user has already used the database, don't display the 'Welcome' message.
         if times_used == 0:
             print("Welcome to the country database! Please select an option:")
@@ -193,7 +192,7 @@ while True:
         print("9. Print the capitals in alphabetical order")
         print("10. Search for a specific capital")
         print("11. Exit")
-        
+
         choice = int(input("Choice: "))
         # runs the functions recquired for each input
         if choice == 1:
@@ -241,6 +240,3 @@ while True:
         print("Invalid input. Please enter a number from 1 to 11.")
 
 print("Thanks for using!")
-        
-
-
