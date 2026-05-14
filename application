@@ -170,6 +170,27 @@ def print_specific_capital(formatted_capital_name):
     db.close()
 
 
+def print_top_3_cities(formatted_country_name):
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT country_id FROM country_list WHERE name = ?"
+    params = (formatted_country_name,)
+    cursor.execute(sql, params)
+    country_result = cursor.fetchone()
+    country_id = country_result[0]
+    print(results)
+    sql = "SELECT name, population FROM cities_list WHERE country_id = ?"
+    params = (country_id,)
+    cursor.execute(sql, params)
+    city_results = cursor.fetchone()
+    if results is None:
+        print("Country not found or too small.")
+    else:
+        print("Name:                                   Population:         Area (sq mi):       GDP per capita (USD):")
+        row = results
+        print(f"{row[0]:<40}{row[1]:<20}")
+    db.close()
+
 while True:
     try:
         # Print out a menu for users to select what action they want to do.
@@ -184,14 +205,16 @@ while True:
         print("3. Print the area of each country in square miles")
         print("4. Print the GDP per capita of each country")
         print("5. Search for a specific country")
-        print("Capital commands:")
+        print("City commands:")
         # show all the options relating to capitals
         print("6. Print all capital information")
         print("7. Print the population of each capital")
         print("8. Print the date established of each capital")
         print("9. Print the capitals in alphabetical order")
         print("10. Search for a specific capital")
-        print("11. Exit")
+        print("11. Biggest three cities of a specific country")
+        print("12. Biggest city of each country")
+        print("13. Exit")
 
         choice = int(input("Choice: "))
         # runs the functions recquired for each input
@@ -231,6 +254,19 @@ while True:
             # runs the command
             print_specific_capital(formatted_capital_name)
         elif choice == 11:
+            # gets the name of a specific country
+            country_name = input("Enter the name of the country you want to search for: ")
+            # removes spaces from the input
+            country_name = country_name.strip()
+            # formats the input to match the database
+            country_name = country_name.title()
+            formatted_country_name = country_name + " "
+            # runs the command
+            print(formatted_country_name)
+            print_top_3_cities(formatted_country_name[0])
+        elif choice == 12:
+            print
+        elif choice == 13:
             break
             # exit the code
         else:
