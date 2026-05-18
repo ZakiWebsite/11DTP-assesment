@@ -121,19 +121,19 @@ def print_capital_alphabetically():
     cursor.execute(sql)
     results = cursor.fetchall()
     # print a header for the information
-    print("Name:                                   Population: Date_Established:")
+    print("Name:                                   Population:         Date_Established:")
     # print the information neatly
     for row in results:
         print(f"{row[0]:<40}{row[1]:<20}{row[2]:<20}")
     db.close()
 
 
-def print_specific_country(formatted_country_name):
+def print_specific_country(country_name):
     # takes the users desired capital and outputs information about it
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT * FROM country_list WHERE country = ?"
-    params = (formatted_country_name,)
+    sql = "SELECT * FROM country_list WHERE country LIKE ?"
+    params = ((f"{country_name}%",))
     # connect the python code to the SQL query
     cursor.execute(sql, params)
     results = cursor.fetchone()
@@ -163,33 +163,54 @@ def print_specific_capital(formatted_capital_name):
         print("Capital not found.")
     else:
         # print a header for the information
-        print("Name:                                   Population:       Date Established:")
+        print("Name:                                   Population:         Date Established:")
         # print the information neatly
         row = results
         print(f"{row[1]:<40}{row[2]:<20}{row[3]:<20}")
     db.close()
 
 
-def print_top_3_cities(formatted_country_name):
+def print_top_3_cities(country_name):
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    sql = "SELECT country_id FROM country_list WHERE name = ?"
-    params = (formatted_country_name,)
+    # Get the country ID first (fixed WHERE clause column name from 'name' to 'country')
+    sql = "SELECT country_id FROM country_list WHERE country LIKE ?"
+    params = ((f"{country_name}%",))
     cursor.execute(sql, params)
     country_result = cursor.fetchone()
+    if country_result is None:
+        # check if country exists and if it doesn't print an error message.
+        print("Country not found.")
     country_id = country_result[0]
-    print(results)
-    sql = "SELECT name, population FROM cities_list WHERE country_id = ?"
+    # Get top 3 cities for that country ID
+    sql = "SELECT name, population FROM cities_list WHERE country_id = ? ORDER BY population DESC LIMIT 3"
     params = (country_id,)
     cursor.execute(sql, params)
-    city_results = cursor.fetchone()
-    if results is None:
-        print("Country not found or too small.")
+    city_results = cursor.fetchall()
+    if not city_results:
+        # check if there are any cities for that country and if there aren't print an error message.
+        print("No cities found for this country.")
     else:
-        print("Name:                                   Population:         Area (sq mi):       GDP per capita (USD):")
-        row = results
+        # print the information neatly
+        print(f"{'Name:':<40}{'Population:':<20}")
+        for row in city_results:
+            print(f"{row[0]:<40}{row[1]:<20}")
+    db.close()
+
+
+def print_biggest_city_each_country():
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    # run the sql code to get the biggest city of each country
+    sql = "SELECT name, MAX(CAST(population AS INTEGER)) FROM cities_list GROUP BY country_id ORDER BY population DESC"
+    cursor.execute(sql)
+    city_results = cursor.fetchall()
+    # print the information neatly
+    print(f"{'Name:':<40}{'Population:':<20}")
+    for row in city_results:
         print(f"{row[0]:<40}{row[1]:<20}")
     db.close()
+
 
 while True:
     try:
@@ -213,7 +234,7 @@ while True:
         print("9. Print the capitals in alphabetical order")
         print("10. Search for a specific capital")
         print("11. Biggest three cities of a specific country")
-        print("12. Biggest city of each country")
+        print("12. Biggest city of each country ordered by population")
         print("13. Exit")
 
         choice = int(input("Choice: "))
@@ -229,13 +250,7 @@ while True:
         elif choice == 5:
             # gets the name of a specific country
             country_name = input("Enter the name of the country you want to search for: ")
-            # removes spaces from the input
-            country_name = country_name.strip()
-            # formats the input to match the database
-            country_name = country_name.title()
-            formatted_country_name = country_name + " "
-            # runs the command
-            print_specific_country(formatted_country_name)
+            print_specific_country(country_name.strip())
         elif choice == 6:
             print_capital_info()
         elif choice == 7:
@@ -256,16 +271,9 @@ while True:
         elif choice == 11:
             # gets the name of a specific country
             country_name = input("Enter the name of the country you want to search for: ")
-            # removes spaces from the input
-            country_name = country_name.strip()
-            # formats the input to match the database
-            country_name = country_name.title()
-            formatted_country_name = country_name + " "
-            # runs the command
-            print(formatted_country_name)
-            print_top_3_cities(formatted_country_name[0])
+            print_top_3_cities(country_name.strip())
         elif choice == 12:
-            print
+            print_biggest_city_each_country()
         elif choice == 13:
             break
             # exit the code
@@ -273,6 +281,6 @@ while True:
             print('Invalid input.')
     except ValueError:
         # check if the input is invalid, and if it is, print an error message
-        print("Invalid input. Please enter a number from 1 to 11.")
+        print("Invalid input. Please enter a number from 1 to 13.")
 
 print("Thanks for using!")
