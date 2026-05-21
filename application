@@ -1,11 +1,20 @@
 ''' docstring Zakaria B. country database '''
 import sqlite3
+import os
+
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# Join it with the database file name
+db_path = os.path.join(script_dir, "countries.db")
+connection = sqlite3.connect(db_path)
+connection.close()
+
 
 # constants and variables
 DATABASE = 'countries.db'
 times_used = 0
 
-
+# 
 # functions
 
 def print_country_info():
